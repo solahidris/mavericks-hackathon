@@ -1,0 +1,36 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "relay-a2a-marketplace",
+  "workers_dev": true,
+  "preview_urls": false,
+  "main": "worker/index.ts",
+  "compatibility_date": "2026-09-13",
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": { "enabled": true },
+  "assets": {
+    "directory": "./out",
+    "binding": "ASSETS",
+    "run_worker_first": ["/api/*", "/agents/*"],
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "relay-marketplace",
+      "migrations_dir": "migrations",
+    },
+  ],
+  "queues": {
+    "producers": [{ "binding": "TASK_QUEUE", "queue": "relay-tasks" }],
+    "consumers": [
+      { "queue": "relay-tasks", "max_batch_size": 1, "max_retries": 0 },
+    ],
+  },
+  "vars": {
+    "PAYMENT_MODE": "devnet",
+    "FACILITATOR_URL": "https://x402.org/facilitator",
+    "SOLANA_RPC_URL": "https://demo.helius.dev/api/rpc?network=devnet",
+    "USDC_MINT": "4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU",
+    "PUBLIC_ORIGIN": "http://localhost:8787",
+    "CORS_ORIGIN": "http://localhost:3000",
+  },
+}
